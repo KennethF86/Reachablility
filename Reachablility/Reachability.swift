@@ -9,7 +9,7 @@ import UIKit
 import Foundation
 import SystemConfiguration
 
-public class Reachability: UIResponder, UIApplicationDelegate {
+public class Reachability {
     
     let appDelegate = UIApplication.shared.delegate
     
@@ -56,15 +56,10 @@ public class Reachability: UIResponder, UIApplicationDelegate {
             (_) in
             
             if Reachability.isConnectedToNetwork(){
-                print("Internet Connection Available!")
+//                print("Internet Connection Available!")
                 self.hideOverlayView()
-                //                if screenType == .full {
-                //                    self.showOverlayFullScreen(alertMessage: alertMessages, backgroundColor: backgroundColor, textColor: textColor, textFont: textFont, alertIcon: alertIcon)
-                //                } else if screenType == .topBar {
-                //                    self.showOverlayTopbar(alertMessage: alertMessages, backgroundColor: backgroundColor, textColor: textColor, textFont: textFont)
-                //                }
             }else{
-                print("Internet Connection not Available!")
+//                print("Internet Connection not Available!")
                 if screenType == .full {
                     self.showOverlayFullScreen(alertMessage: alertMessages, backgroundColor: backgroundColor, textColor: textColor, textFont: textFont, alertIcon: alertIcon)
                 } else if screenType == .topBar {
@@ -75,64 +70,115 @@ public class Reachability: UIResponder, UIApplicationDelegate {
     }
     
     private func showOverlayTopbar(alertMessage: String, backgroundColor: UIColor, textColor: UIColor, textFont: UIFont) {
-        if let window = UIApplication.shared.currentWindow {
-            //        if let window = UIApplication.shared.keyWindow {
-            self.alreadyShowing = true
-            let screenWidth = UIScreen.main.bounds.width
-            self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: 80)
-            self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: 80)
-            self.overlayView.backgroundColor = backgroundColor
-            self.overlayView.clipsToBounds = true
+        
+        if #available(iOS 13.0, *) {
+            if let window = UIApplication.shared.currentWindow {
+                self.alreadyShowing = true
+                let screenWidth = UIScreen.main.bounds.width
+                self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: 80)
+                self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: 80)
+                self.overlayView.backgroundColor = backgroundColor
+                self.overlayView.clipsToBounds = true
+                
+                self.overlayTextView.textColor = textColor
+                self.overlayTextView.font = textFont
+                self.overlayTextView.backgroundColor = .clear
+                self.overlayTextView.textAlignment = .center
+                self.overlayTextView.text = alertMessage
+                self.overlayTextView.frame = CGRect(x: 0, y: 0, width: overlayView.bounds.width, height: 50)
+                self.overlayTextView.center = CGPoint(x: overlayView.bounds.width / 2, y: overlayView.bounds.height / 2)
+                self.overlayTextView.clipsToBounds = true
+                self.overlayView.addSubview(overlayTextView)
+                window.addSubview(overlayView)
+            }
+        } else {
             
-            self.overlayTextView.textColor = textColor
-            self.overlayTextView.font = textFont
-            self.overlayTextView.backgroundColor = .clear
-            self.overlayTextView.textAlignment = .center
-            self.overlayTextView.text = alertMessage
-            self.overlayTextView.frame = CGRect(x: 0, y: 0, width: overlayView.bounds.width, height: 50)
-            self.overlayTextView.center = CGPoint(x: overlayView.bounds.width / 2, y: overlayView.bounds.height / 2)
-            self.overlayTextView.clipsToBounds = true
-            self.overlayView.addSubview(overlayTextView)
-            window.addSubview(overlayView)
+            if let window = UIApplication.shared.keyWindow {
+                self.alreadyShowing = true
+                let screenWidth = UIScreen.main.bounds.width
+                self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: 80)
+                self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: 80)
+                self.overlayView.backgroundColor = backgroundColor
+                self.overlayView.clipsToBounds = true
+                
+                self.overlayTextView.textColor = textColor
+                self.overlayTextView.font = textFont
+                self.overlayTextView.backgroundColor = .clear
+                self.overlayTextView.textAlignment = .center
+                self.overlayTextView.text = alertMessage
+                self.overlayTextView.frame = CGRect(x: 0, y: 0, width: overlayView.bounds.width, height: 50)
+                self.overlayTextView.center = CGPoint(x: overlayView.bounds.width / 2, y: overlayView.bounds.height / 2)
+                self.overlayTextView.clipsToBounds = true
+                self.overlayView.addSubview(overlayTextView)
+                window.addSubview(overlayView)
+            }
         }
-        //        }
     }
     
     
     private func showOverlayFullScreen(alertMessage: String, backgroundColor: UIColor, textColor: UIColor, textFont: UIFont, alertIcon: UIImage) {
         
-        self.alreadyShowing = true
-        if let window = UIApplication.shared.currentWindow {
-            //        if let window = UIApplication.shared.keyWindow {
-            let screenWidth = UIScreen.main.bounds.width
-            let screenHeight = UIScreen.main.bounds.height
-            self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
-            self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: screenHeight / 2.0)
-            self.overlayView.backgroundColor = backgroundColor
-            self.overlayView.clipsToBounds = true
+        if #available(iOS 13.0, *) {
+            if let window = UIApplication.shared.currentWindow {
+                let screenWidth = UIScreen.main.bounds.width
+                let screenHeight = UIScreen.main.bounds.height
+                self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+                self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: screenHeight / 2.0)
+                self.overlayView.backgroundColor = backgroundColor
+                self.overlayView.clipsToBounds = true
+                
+                let yourImage = alertIcon
+                self.overlayImageView.image = yourImage
+                self.overlayImageView.translatesAutoresizingMaskIntoConstraints = false
+                self.overlayImageView.setImageColor(color: textColor)
+                self.overlayView.addSubview(overlayImageView)
+                self.overlayImageView.frame = CGRect(x: (screenWidth / 2) - 75, y: (screenHeight / 2) - 75, width: 150, height: 150)
+                
+                self.overlayTextView.textColor = textColor
+                self.overlayTextView.backgroundColor = .clear
+                self.overlayTextView.textAlignment = .center
+                self.overlayTextView.text = alertMessage
+                self.overlayTextView.font = textFont
+                self.overlayTextView.frame = CGRect(x: 0, y: 0, width: overlayView.bounds.width, height: 80)
+                let offset: CGFloat = overlayImageView.bounds.height / 2.0 + 10
+                self.overlayTextView.center = CGPoint(x: overlayView.bounds.width / 2, y: (overlayView.bounds.height / 2) + offset)
+                self.overlayTextView.clipsToBounds = true
+                self.overlayView.addSubview(overlayTextView)
+                
+                window.addSubview(overlayView)
+            }
             
-            let yourImage = alertIcon
-            self.overlayImageView.image = yourImage
-            self.overlayImageView.translatesAutoresizingMaskIntoConstraints = false
-            self.overlayImageView.setImageColor(color: textColor)
-            self.overlayView.addSubview(overlayImageView)
-            self.overlayImageView.frame = CGRect(x: (screenWidth / 2) - 75, y: (screenHeight / 2) - 75, width: 150, height: 150)
-            //self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: screenHeight / 2.0)
+        } else {
             
-            self.overlayTextView.textColor = textColor
-            self.overlayTextView.backgroundColor = .clear
-            self.overlayTextView.textAlignment = .center
-            self.overlayTextView.text = alertMessage
-            self.overlayTextView.font = textFont
-            self.overlayTextView.frame = CGRect(x: 0, y: 0, width: overlayView.bounds.width, height: 80)
-            let offset: CGFloat = overlayImageView.bounds.height / 2.0 + 10
-            self.overlayTextView.center = CGPoint(x: overlayView.bounds.width / 2, y: (overlayView.bounds.height / 2) + offset)
-            self.overlayTextView.clipsToBounds = true
-            self.overlayView.addSubview(overlayTextView)
-            
-            window.addSubview(overlayView)
+            if let window = UIApplication.shared.keyWindow {
+                let screenWidth = UIScreen.main.bounds.width
+                let screenHeight = UIScreen.main.bounds.height
+                self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+                self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: screenHeight / 2.0)
+                self.overlayView.backgroundColor = backgroundColor
+                self.overlayView.clipsToBounds = true
+                
+                let yourImage = alertIcon
+                self.overlayImageView.image = yourImage
+                self.overlayImageView.translatesAutoresizingMaskIntoConstraints = false
+                self.overlayImageView.setImageColor(color: textColor)
+                self.overlayView.addSubview(overlayImageView)
+                self.overlayImageView.frame = CGRect(x: (screenWidth / 2) - 75, y: (screenHeight / 2) - 75, width: 150, height: 150)
+                
+                self.overlayTextView.textColor = textColor
+                self.overlayTextView.backgroundColor = .clear
+                self.overlayTextView.textAlignment = .center
+                self.overlayTextView.text = alertMessage
+                self.overlayTextView.font = textFont
+                self.overlayTextView.frame = CGRect(x: 0, y: 0, width: overlayView.bounds.width, height: 80)
+                let offset: CGFloat = overlayImageView.bounds.height / 2.0 + 10
+                self.overlayTextView.center = CGPoint(x: overlayView.bounds.width / 2, y: (overlayView.bounds.height / 2) + offset)
+                self.overlayTextView.clipsToBounds = true
+                self.overlayView.addSubview(overlayTextView)
+                
+                window.addSubview(overlayView)
+            }
         }
-        //        }
     }
     
     public func hideOverlayView() {
@@ -145,6 +191,7 @@ public class Reachability: UIResponder, UIApplicationDelegate {
 
 
 extension UIApplication {
+    @available(iOS 13.0, *)
     var currentWindow: UIWindow? {
         connectedScenes
             .filter({$0.activationState == .foregroundActive})
