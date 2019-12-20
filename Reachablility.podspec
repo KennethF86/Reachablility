@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name           = 'Reachablility'
-  s.version        = '1.0.0'
+  s.version        = '1.0.2'
   s.summary        = 'A small framework to monitor network changes in Swift.'
   s.homepage       = 'http://www.mustache.dk'
   s.license        = { :type => 'MIT', :file => 'LICENSE' }

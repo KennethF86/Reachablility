@@ -187,11 +187,8 @@ public class Reachability {
     }
 }
 
-
-
-
+@available(iOS 13.0, *)
 extension UIApplication {
-    @available(iOS 13.0, *)
     var currentWindow: UIWindow? {
         connectedScenes
             .filter({$0.activationState == .foregroundActive})
