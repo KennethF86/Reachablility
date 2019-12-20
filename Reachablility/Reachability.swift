@@ -9,7 +9,9 @@ import UIKit
 import Foundation
 import SystemConfiguration
 
-public class Reachability {
+public class Reachability: UIResponder, UIApplicationDelegate {
+    
+    public override init() {}
     
     let appDelegate = UIApplication.shared.delegate
     
