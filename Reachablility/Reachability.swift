@@ -58,9 +58,8 @@ public class Reachability: UIResponder, UIApplicationDelegate {
             (_) in
             
             if Reachability.isConnectedToNetwork(){
-                self.showOverlayTopbar(alertMessage: alertMessages, backgroundColor: backgroundColor, textColor: textColor, textFont: textFont, alertIcon: alertIcon)
                 //                print("Internet Connection Available!")
-                //                self.hideOverlayView()
+                                self.hideOverlayView()
             }else{
                 //                print("Internet Connection not Available!")
                 if screenType == .full {
