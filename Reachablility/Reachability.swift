@@ -50,7 +50,7 @@ public class Reachability: UIResponder, UIApplicationDelegate {
     var overlayTextView = UILabel()
     let overlayImageView = UIImageView()
     
-    public func checkConnection(alertMessages: String, screenType: screenType, backgroundColor: UIColor, textColor: UIColor, textFont: UIFont, alertIcon: UIImage) {
+    public func checkConnection(alertMessages: String, screenType: screenType, backgroundColor: UIColor, textColor: UIColor, textFont: UIFont, alertIcon: UIImage?) {
         
         let time: Double = 2
         
@@ -58,29 +58,40 @@ public class Reachability: UIResponder, UIApplicationDelegate {
             (_) in
             
             if Reachability.isConnectedToNetwork(){
-//                print("Internet Connection Available!")
-                self.hideOverlayView()
+                self.showOverlayTopbar(alertMessage: alertMessages, backgroundColor: backgroundColor, textColor: textColor, textFont: textFont, alertIcon: alertIcon)
+                //                print("Internet Connection Available!")
+                //                self.hideOverlayView()
             }else{
-//                print("Internet Connection not Available!")
+                //                print("Internet Connection not Available!")
                 if screenType == .full {
                     self.showOverlayFullScreen(alertMessage: alertMessages, backgroundColor: backgroundColor, textColor: textColor, textFont: textFont, alertIcon: alertIcon)
                 } else if screenType == .topBar {
-                    self.showOverlayTopbar(alertMessage: alertMessages, backgroundColor: backgroundColor, textColor: textColor, textFont: textFont)
+                    self.showOverlayTopbar(alertMessage: alertMessages, backgroundColor: backgroundColor, textColor: textColor, textFont: textFont, alertIcon: alertIcon)
                 }
             }
         }
     }
     
-    private func showOverlayTopbar(alertMessage: String, backgroundColor: UIColor, textColor: UIColor, textFont: UIFont) {
+    private func showOverlayTopbar(alertMessage: String, backgroundColor: UIColor, textColor: UIColor, textFont: UIFont, alertIcon: UIImage?) {
         
         if #available(iOS 13.0, *) {
             if let window = UIApplication.shared.currentWindow {
                 self.alreadyShowing = true
+                let screenHeight: CGFloat = 80
                 let screenWidth = UIScreen.main.bounds.width
-                self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: 80)
-                self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: 80)
+                self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+                self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: screenHeight)
                 self.overlayView.backgroundColor = backgroundColor
                 self.overlayView.clipsToBounds = true
+                
+                if alertIcon != nil {
+                    let yourImage = alertIcon
+                    self.overlayImageView.image = yourImage
+                    self.overlayImageView.translatesAutoresizingMaskIntoConstraints = false
+                    self.overlayImageView.setImageColor(color: textColor)
+                    self.overlayView.addSubview(overlayImageView)
+                    self.overlayImageView.frame = CGRect(x: 50, y: (screenHeight / 2) - 15, width: 30, height: 30)
+                }
                 
                 self.overlayTextView.textColor = textColor
                 self.overlayTextView.font = textFont
@@ -97,11 +108,21 @@ public class Reachability: UIResponder, UIApplicationDelegate {
             
             if let window = UIApplication.shared.keyWindow {
                 self.alreadyShowing = true
+                let screenHeight: CGFloat = 80
                 let screenWidth = UIScreen.main.bounds.width
-                self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: 80)
-                self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: 80)
+                self.overlayView.frame = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
+                self.overlayView.center = CGPoint(x: screenWidth / 2.0, y: screenHeight)
                 self.overlayView.backgroundColor = backgroundColor
                 self.overlayView.clipsToBounds = true
+                
+                if alertIcon != nil {
+                    let yourImage = alertIcon
+                    self.overlayImageView.image = yourImage
+                    self.overlayImageView.translatesAutoresizingMaskIntoConstraints = false
+                    self.overlayImageView.setImageColor(color: textColor)
+                    self.overlayView.addSubview(overlayImageView)
+                    self.overlayImageView.frame = CGRect(x: 50, y: (screenHeight / 2) - 15, width: 30, height: 30)
+                }
                 
                 self.overlayTextView.textColor = textColor
                 self.overlayTextView.font = textFont
@@ -118,7 +139,7 @@ public class Reachability: UIResponder, UIApplicationDelegate {
     }
     
     
-    private func showOverlayFullScreen(alertMessage: String, backgroundColor: UIColor, textColor: UIColor, textFont: UIFont, alertIcon: UIImage) {
+    private func showOverlayFullScreen(alertMessage: String, backgroundColor: UIColor, textColor: UIColor, textFont: UIFont, alertIcon: UIImage?) {
         
         if #available(iOS 13.0, *) {
             if let window = UIApplication.shared.currentWindow {
@@ -129,12 +150,14 @@ public class Reachability: UIResponder, UIApplicationDelegate {
                 self.overlayView.backgroundColor = backgroundColor
                 self.overlayView.clipsToBounds = true
                 
-                let yourImage = alertIcon
-                self.overlayImageView.image = yourImage
-                self.overlayImageView.translatesAutoresizingMaskIntoConstraints = false
-                self.overlayImageView.setImageColor(color: textColor)
-                self.overlayView.addSubview(overlayImageView)
-                self.overlayImageView.frame = CGRect(x: (screenWidth / 2) - 75, y: (screenHeight / 2) - 75, width: 150, height: 150)
+                if alertIcon != nil {
+                    let yourImage = alertIcon
+                    self.overlayImageView.image = yourImage
+                    self.overlayImageView.translatesAutoresizingMaskIntoConstraints = false
+                    self.overlayImageView.setImageColor(color: textColor)
+                    self.overlayView.addSubview(overlayImageView)
+                    self.overlayImageView.frame = CGRect(x: (screenWidth / 2) - 75, y: (screenHeight / 2) - 75, width: 150, height: 150)
+                }
                 
                 self.overlayTextView.textColor = textColor
                 self.overlayTextView.backgroundColor = .clear
@@ -160,12 +183,14 @@ public class Reachability: UIResponder, UIApplicationDelegate {
                 self.overlayView.backgroundColor = backgroundColor
                 self.overlayView.clipsToBounds = true
                 
-                let yourImage = alertIcon
-                self.overlayImageView.image = yourImage
-                self.overlayImageView.translatesAutoresizingMaskIntoConstraints = false
-                self.overlayImageView.setImageColor(color: textColor)
-                self.overlayView.addSubview(overlayImageView)
-                self.overlayImageView.frame = CGRect(x: (screenWidth / 2) - 75, y: (screenHeight / 2) - 75, width: 150, height: 150)
+                if alertIcon != nil {
+                    let yourImage = alertIcon
+                    self.overlayImageView.image = yourImage
+                    self.overlayImageView.translatesAutoresizingMaskIntoConstraints = false
+                    self.overlayImageView.setImageColor(color: textColor)
+                    self.overlayView.addSubview(overlayImageView)
+                    self.overlayImageView.frame = CGRect(x: (screenWidth / 2) - 75, y: (screenHeight / 2) - 75, width: 150, height: 150)
+                }
                 
                 self.overlayTextView.textColor = textColor
                 self.overlayTextView.backgroundColor = .clear
